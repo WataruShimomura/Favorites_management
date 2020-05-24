@@ -1,130 +1,143 @@
-export interface Comment {
-  stringValue: string;
-  valueType: string;
+export default interface RootObject {
+  _fieldsProto: {
+    comment: {
+      stringValue: string | null;
+      valueType: string | null;
+    };
+    language: {
+      stringValue: string | null;
+      valueType: string | null;
+    };
+    repositoryname: {
+      stringValue: string | null;
+      valueType: string | null;
+    };
+    url: {
+      stringValue: string | null;
+      valueType: string | null;
+    };
+  };
+  _ref: { segments: [string] | null };
 }
 
-export interface Language {
-  stringValue: string;
-  valueType: string;
-}
+// export interface Comment {
+//   stringValue: string;
+//   valueType: string;
+// }
 
-export interface Repositoryname {
-  stringValue: string;
-  valueType: string;
-}
+// export interface Language {
+//   stringValue: string;
+//   valueType: string;
+// }
 
-export interface Url {
-  stringValue: string;
-  valueType: string;
-}
+// export interface Repositoryname {
+//   stringValue: string;
+//   valueType: string;
+// }
 
-export interface FieldsProto {
-  comment: Comment;
-  language: Language;
-  repositoryname: Repositoryname;
-  url: Url;
-}
+// export interface Url {
+//   stringValue: string;
+//   valueType: string;
+// }
 
-export interface ClientConfig {}
+// export interface FieldsProto {
+//   comment: Comment;
+//   language: Language;
+//   repositoryname: Repositoryname;
+//   url: Url;
+// }
 
-export interface Settings {
-  projectId: string;
-  firebaseVersion: string;
-  libName: string;
-  libVersion: string;
-  servicePath: string;
-  port: number;
-  clientConfig: ClientConfig;
-  scopes: string[];
-}
+// export interface ClientConfig {}
 
-export interface Serializer {
-  allowUndefined: boolean;
-}
+// export interface Settings {
+//   projectId: string;
+//   firebaseVersion: string;
+//   libName: string;
+//   libVersion: string;
+//   servicePath: string;
+//   port: number;
+//   clientConfig: ClientConfig;
+//   scopes: string[];
+// }
 
-export interface BackoffSettings {
-  initialDelayMs: number;
-  maxDelayMs: number;
-  backoffFactor: number;
-}
+// export interface Serializer {
+//   allowUndefined: boolean;
+// }
 
-export interface ActiveClients {}
+// export interface BackoffSettings {
+//   initialDelayMs: number;
+//   maxDelayMs: number;
+//   backoffFactor: number;
+// }
 
-export interface Events {}
+// export interface ActiveClients {}
 
-export interface Domain {
-  domain?: any;
-  _events: Events;
-  _eventsCount: number;
-  members: any[];
-}
+// export interface Events {}
 
-export interface Promise {
-  domain: Domain;
-}
+// export interface Domain {
+//   domain?: any;
+//   _events: Events;
+//   _eventsCount: number;
+//   members: any[];
+// }
 
-export interface TerminateDeferred {
-  promise: Promise;
-}
+// export interface Promise {
+//   domain: Domain;
+// }
 
-export interface ClientPool {
-  concurrentOperationLimit: number;
-  maxIdleClients: number;
-  activeClients: ActiveClients;
-  terminated: boolean;
-  terminateDeferred: TerminateDeferred;
-}
+// export interface TerminateDeferred {
+//   promise: Promise;
+// }
 
-export interface Firestore {
-  _settings: Settings;
-  _settingsFrozen: boolean;
-  _serializer: Serializer;
-  _projectId: string;
-  registeredListenersCount: number;
-  _lastSuccessfulRequest: any;
-  _backoffSettings: BackoffSettings;
-  _preferTransactions: boolean;
-  _clientPool: ClientPool;
-}
+// export interface ClientPool {
+//   concurrentOperationLimit: number;
+//   maxIdleClients: number;
+//   activeClients: ActiveClients;
+//   terminated: boolean;
+//   terminateDeferred: TerminateDeferred;
+// }
 
-export interface Path {
-  segments: string[];
-  projectId: string;
-  databaseId: string;
-}
+// export interface Firestore {
+//   _settings: Settings;
+//   _settingsFrozen: boolean;
+//   _serializer: Serializer;
+//   _projectId: string;
+//   registeredListenersCount: number;
+//   _lastSuccessfulRequest: any;
+//   _backoffSettings: BackoffSettings;
+//   _preferTransactions: boolean;
+//   _clientPool: ClientPool;
+// }
 
-export interface Converter {}
+// export interface Path {
+//   segments: string[];
+//   projectId: string;
+//   databaseId: string;
+// }
 
-export interface Ref {
-  _firestore: Firestore;
-  _path: Path;
-  _converter: Converter;
-}
+// export interface Converter {}
 
-export interface Serializer2 {
-  allowUndefined: boolean;
-}
+// export interface Ref {
+//   _firestore: Firestore;
+//   _path: Path;
+//   _converter: Converter;
+// }
 
-export interface ReadTime {
-  _seconds: number;
-  _nanoseconds: number;
-}
+// export interface Serializer2 {
+//   allowUndefined: boolean;
+// }
 
-export interface CreateTime {
-  _seconds: number;
-  _nanoseconds: number;
-}
+// export interface ReadTime {
+//   _seconds: number;
+//   _nanoseconds: number;
+// }
 
-export interface UpdateTime {
-  _seconds: number;
-  _nanoseconds: number;
-}
+// export interface CreateTime {
+//   _seconds: number;
+//   _nanoseconds: number;
+// }
 
-export interface RootObject {
-  _fieldsProto: FieldsProto;
-  _ref: Ref;
-  _serializer: Serializer2;
-  _readTime: ReadTime;
-  _createTime: CreateTime;
-  _updateTime: UpdateTime;
-}
+// export interface UpdateTime {
+//   _seconds: number;
+//   _nanoseconds: number;
+// }
