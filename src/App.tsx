@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Stars from 'components/Stars'
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 

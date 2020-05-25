@@ -1,7 +1,7 @@
-export default interface RootObject {
+export default interface StarListObject {
   _fieldsProto: {
     comment: {
-      stringValue: string | null;
+      stringValue: string;
       valueType: string | null;
     };
     language: {
@@ -17,7 +17,11 @@ export default interface RootObject {
       valueType: string | null;
     };
   };
-  _ref: { segments: [string] | null };
+  _ref: {
+    _path: {
+      segments: [string, string, string, string, string, string];
+    };
+  };
 }
 
 // export interface Comment {
