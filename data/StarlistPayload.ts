@@ -2,19 +2,19 @@ export default interface StarListObject {
   _fieldsProto: {
     comment: {
       stringValue: string;
-      valueType: string | null;
+      valueType: string;
     };
     language: {
-      stringValue: string | null;
-      valueType: string | null;
+      stringValue: string;
+      valueType: string;
     };
     repositoryname: {
-      stringValue: string | null;
-      valueType: string | null;
+      stringValue: string;
+      valueType: string;
     };
     url: {
-      stringValue: string | null;
-      valueType: string | null;
+      stringValue: string;
+      valueType: string;
     };
   };
   _ref: {

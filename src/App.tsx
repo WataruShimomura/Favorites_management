@@ -39,9 +39,6 @@ const Entry = () => {
 const Mainpage = () => {
   return (
     <div>
-      <h1>お気に入り一覧</h1>
-      並び替え<button>firter</button>
-      <button>sort</button>
       <Stars></Stars>
       <p>
         <Link to="/entry">
