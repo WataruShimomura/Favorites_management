@@ -101,6 +101,29 @@ const Stares: React.FC = () => {
         }
     }
 
+    const sortRepositoryname = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const line = [...starList].sort(function (a, b) {
+            if (e.target.value == "down") {
+                if (a._fieldsProto.repositoryname.stringValue < b._fieldsProto.repositoryname.stringValue) {
+                    return -1;
+                }
+                if (a._fieldsProto.repositoryname.stringValue > b._fieldsProto.repositoryname.stringValue) {
+                    return 1;
+                }
+                return 0;
+            } else {
+                if (a._fieldsProto.repositoryname.stringValue < b._fieldsProto.repositoryname.stringValue) {
+                    return 1;
+                }
+                if (a._fieldsProto.repositoryname.stringValue > b._fieldsProto.repositoryname.stringValue) {
+                    return -1;
+                }
+                return 0;
+            };
+        });
+        setStarList(line)
+    }
+
     return <div>
         <h1>お気に入り一覧</h1>
       並び替え
@@ -109,7 +132,7 @@ const Stares: React.FC = () => {
             <option value="Java">Java</option>
             <option value="React">React</option>
         </select>
-                リポジトリ名<select name="リポジトリ名">
+        リポジトリ名<select name="リポジトリ名" onChange={((e) => { sortRepositoryname(e) })}>
             <option value="down">降順</option>
             <option value="up">昇順</option>
         </select>
