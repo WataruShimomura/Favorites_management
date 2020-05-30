@@ -169,6 +169,7 @@ const Stares: React.FC = () => {
                 }
             )
         }</StarList>
+        <div><a href="#">ページトップへ</a></div>
     </div>
 };
 

@@ -40,14 +40,6 @@ const Mainpage = () => {
   return (
     <div>
       <Stars></Stars>
-      <p>
-        <Link to="/entry">
-          <button>新規登録</button>
-        </Link>
-      </p>
-      <Link to="/">
-        <button>ログアウト</button>
-      </Link>
     </div>
   );
 };
