@@ -1,29 +1,30 @@
 import axios from 'axios';
 import StarListObject from '../../data/StarlistPayload';
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
 const defaultState: StarListObject = {
     _fieldsProto: {
         comment: {
-            stringValue: "",
+            stringValue: "読み込み中...",
             valueType: "",
         },
         language: {
-            stringValue: "",
+            stringValue: "読み込み中...",
             valueType: "",
         },
         repositoryname: {
-            stringValue: "",
+            stringValue: "読み込み中...",
             valueType: "",
         },
         url: {
-            stringValue: "",
+            stringValue: "読み込み中...",
             valueType: "",
         },
     },
     _ref: {
         _path: {
-            segments: ["", "", "", "", "", ""],
+            segments: ["", "", "", "", "", "読み込み中..."],
         },
     },
 }
@@ -125,46 +126,108 @@ const Stares: React.FC = () => {
     }
 
     return <div>
-        <h1>お気に入り一覧</h1>
-      並び替え
+        <Hedder>お気に入り一覧
+            <UserName>
+                <UserIcon src="https://avatars0.githubusercontent.com/u/40754318?u=317d1aa7e970bafb23e4dd909767c94a26707c71&v=4"></UserIcon>
+                by <a href="https://github.com/UndyingSugimoto?tab=stars">Watason</a>
+                <Button>新規リポジトリー登録</Button>
+                <Button>ログアウト</Button>
+            </UserName>
+        </Hedder>
       使用言語<select name="使用言語" onChange={((e) => { filterLanguage(e) })}>
             <option value="all">ALL</option>
             <option value="Java">Java</option>
             <option value="React">React</option>
         </select>
-        リポジトリ名<select name="リポジトリ名" onChange={((e) => { sortRepositoryname(e) })}>
+        sort<select name="リポジトリ名" onChange={((e) => { sortRepositoryname(e) })}>
             <option value="down">降順</option>
             <option value="up">昇順</option>
         </select>
-        <ul>{
+        <StarList>{
             starList.map(
                 (state, index) => {
                     return (
                         <div>
-                            <p>------------------------------</p>
-                            <li>
-                                リポジトリ名「{state._fieldsProto.repositoryname.stringValue}」
-                    </li>
-                            <li>URL 「{state._fieldsProto.url.stringValue}」</li>
-                            <li>使用言語「{state._fieldsProto.language.stringValue}」</li>
-                            <li>
-                                コメント「{state._fieldsProto.comment.stringValue}」
-                    <form>
-                                    <label>
+                            <List>
+                                <ListHedder><UserIcon src="https://avatars0.githubusercontent.com/u/40754318?u=317d1aa7e970bafb23e4dd909767c94a26707c71&v=4"></UserIcon>
+                                    <ListTitl href={state._fieldsProto.url.stringValue}>
+                                        {state._fieldsProto.repositoryname.stringValue}
+                                    </ListTitl></ListHedder>
+                                <tr>●　{state._fieldsProto.language.stringValue}</tr>
+                                <tr>
+                                    memo<ListMemo>{state._fieldsProto.comment.stringValue}</ListMemo>
+                                    <p><label>
                                         <textarea name="message-body" placeholder="コメントを入力" onChange={((e) => { handleChange(e, index) })}></textarea>
                                     </label>
-                                    <input type="button" value="コメント更新" onClick={((e) => { UpdataComment(e, index) })} />
-                                </form>
-                            </li>
-                            <li>対象ドキュメント「{state._ref._path.segments[5]}」</li>
-                            <button onClick={((e) => { deleteRepository(e, index) })}>消去</button>
-                            <p>------------------------------</p>
+                                        <input type="button" value="コメント更新" onClick={((e) => { UpdataComment(e, index) })} />
+                                    </p>
+                                </tr>
+                                <button onClick={((e) => { deleteRepository(e, index) })}>消去</button>
+                            </List>
                         </div>
                     )
                 }
             )
-        }</ul>;
+        }</StarList>
     </div>
 };
+
+const Hedder = styled.h1`
+background: #24292e;
+color: hsla(0,0%,100%);
+margin: 0%;
+text-align: center;
+`
+
+const UserName = styled.div`
+margin: 15px;
+text-underline-position: under;
+`
+const UserIcon = styled.img`
+border-radius: 10px;
+height: 30px;
+margin-right: 15px;
+text-align:center;
+width: 30px;
+`
+const Button = styled.button`
+margin: 15px;
+`
+
+const StarList = styled.ul`
+background: #c0c0c0;
+display: flex;
+flex-direction: row;
+padding: 15px;
+`
+
+const Tab = styled.div`
+display: flex;
+flex-direction: row;
+`
+
+const List = styled.div`
+background: #cfff;
+border-radius: 10px;
+box-shadow: 5px 5px grey;
+display: block;
+margin: 15px;
+padding: 15px;
+text-decoration: none;
+width: 450px;
+`
+
+const ListHedder = styled.h2`
+background: #fff;
+border-radius: 10px;
+`
+
+const ListTitl = styled.a`
+position: fixed;
+`
+const ListMemo = styled.div`
+background: #fff;
+border-radius: 10px;
+`
 
 export default Stares
