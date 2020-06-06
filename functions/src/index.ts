@@ -15,7 +15,7 @@ interface UserData {
           node: {
             id: string;
             name: string;
-            resourcePath: string;
+            url: string;
             owner: {
               login: string;
               avatarUrl: string;
@@ -34,7 +34,7 @@ interface UserData {
 interface starDataList {
   starId: string;
   name: string;
-  resourcePath: string;
+  url: string;
   primaryLanguage: string;
   ownerName: string;
   ownerUrl: string;
@@ -47,8 +47,6 @@ export const getuserid = functions
   .region('asia-northeast1')
   .https.onRequest((request, response) => {
     response.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-    response.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
-    response.set('Access-Control-Allow-Headers', 'Content-Type');
 
     const ref = admin.firestore().collection('/githubdb/userlist/userid');
     ref
@@ -67,20 +65,18 @@ export const registration = functions
   .region('asia-northeast1')
   .https.onRequest((req, response) => {
     response.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-    // response.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST');
-    // response.set('Access-Control-Allow-Headers', 'Content-Type');
+
     const userData: UserData = req.body;
     const userName = userData.data.user.login;
     const userinfo = {
-      url: userData.data.user.login,
+      url: userData.data.user.url,
       avatarUrl: userData.data.user.avatarUrl,
       login: userData.data.user.login
     };
     const starData = {
       starId: userData.data.user.starredRepositories.edges[0].node.id,
       name: userData.data.user.starredRepositories.edges[0].node.name,
-      resourcePath:
-        userData.data.user.starredRepositories.edges[0].node.resourcePath,
+      url: userData.data.user.starredRepositories.edges[0].node.url,
       primaryLanguage:
         userData.data.user.starredRepositories.edges[0].node.primaryLanguage
           .name,
@@ -97,8 +93,7 @@ export const registration = functions
       starList[i] = {
         starId: userData.data.user.starredRepositories.edges[i].node.id,
         name: userData.data.user.starredRepositories.edges[i].node.name,
-        resourcePath:
-          userData.data.user.starredRepositories.edges[i].node.resourcePath,
+        url: userData.data.user.starredRepositories.edges[i].node.url,
         primaryLanguage:
           userData.data.user.starredRepositories.edges[i].node.primaryLanguage
             .name,
@@ -129,10 +124,27 @@ export const registration = functions
     }
 
     response.end();
-    // const ref = admin.firestore().collection('/githubdb/userlist/userid/');
-    // ref.doc(`testtest`).set(data);
-    // const setid = request.query.userid;
-    // admin.firestore().doc(`/githubdb/userlist/userid/${setid}`);
+  });
+
+// 対象のユーザーの情報を取得する
+export const getsUserData = functions
+  .region('asia-northeast1')
+  .https.onRequest((request, response) => {
+    response.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    const user = request.query.userId;
+
+    const ref = admin
+      .firestore()
+      .collection('/githubdb/userlist/userid')
+      .doc(`${user}`);
+    ref
+      .get()
+      .then(snapshot => {
+        response.json(snapshot);
+      })
+      .catch(error => {
+        response.status(500).send(error);
+      });
   });
 
 // 対象のユーザーのお気に入り一覧を取得する
@@ -140,10 +152,13 @@ export const getsStarelist = functions
   .region('asia-northeast1')
   .https.onRequest((request, response) => {
     response.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    const user = request.query.userId;
 
     const ref = admin
       .firestore()
-      .collection('/githubdb/userlist/userid/testacount/starlist');
+      .collection('/githubdb/userlist/userid')
+      .doc(`${user}`)
+      .collection('starlist');
     ref
       .get()
       .then(snapshot => {

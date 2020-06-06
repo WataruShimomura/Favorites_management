@@ -2,30 +2,68 @@ import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 import StarListObject from '../../data/StarlistPayload';
-import Test from './Test';
+import UserDataObject from '../../data/UserDataPayload';
 
-const defaultState: StarListObject = {
+const defaultUserState: UserDataObject = {
     _fieldsProto: {
+        url: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        avatarUrl: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        login: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+    },
+    _ref: {
+        _path: {
+            segments: ['', '', '', '']
+        }
+    }
+};
+
+const defaultStarListState: StarListObject = {
+    _fieldsProto: {
+        starId: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        ownerUrl: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        ownerIcon: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        primaryLanguage: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
+        ownerName: {
+            stringValue: '読み込み中...',
+            valueType: ''
+        },
         comment: {
-            stringValue: '読み込み中...',
-            valueType: ''
-        },
-        language: {
-            stringValue: '読み込み中...',
-            valueType: ''
-        },
-        repositoryname: {
             stringValue: '読み込み中...',
             valueType: ''
         },
         url: {
             stringValue: '読み込み中...',
             valueType: ''
+        },
+        name: {
+            stringValue: '読み込み中...',
+            valueType: ''
         }
     },
     _ref: {
         _path: {
-            segments: ['', '', '', '', '', '読み込み中...']
+            segments: ['', '', '', '', '', '']
         }
     }
 };
@@ -35,29 +73,46 @@ type Props = {
 }
 
 const Stares: React.FC<Props> = (props) => {
+    const [userData, setUserData] = React.useState<UserDataObject>(
+        defaultUserState);
     const [starList, setStarList] = React.useState<StarListObject[]>([
-        defaultState
+        defaultStarListState
     ]);
     // フィルター機能を初期化するために使用する。
     const [defaultList, setDefaultList] = React.useState<StarListObject[]>([
-        defaultState
+        defaultStarListState
     ]);
 
     React.useEffect(() => {
         axios
-            .get<StarListObject[]>(
-                'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/getsStarelist'
+            .get<UserDataObject>(
+                'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/getsUserData?userId=' + props.userName
             )
             .then(results => {
                 const returnJson = results;
-                console.log(returnJson.data[0]._fieldsProto.comment.stringValue);
+                setUserData(returnJson.data);
+
+                return returnJson;
+            })
+            .catch(error => {
+                console.log('通信失敗1');
+                console.log(error);
+                // 失敗したときは空のjsonを返す
+            });
+
+        axios
+            .get<StarListObject[]>(
+                'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/getsStarelist?userId=' + props.userName
+            )
+            .then(results => {
+                const returnJson = results;
                 setStarList(returnJson.data);
                 setDefaultList(returnJson.data);
 
                 return returnJson;
             })
             .catch(error => {
-                console.log('通信失敗');
+                console.log('通信失敗2');
                 console.log(error);
                 // 失敗したときは空のjsonを返す
             });
@@ -112,7 +167,7 @@ const Stares: React.FC<Props> = (props) => {
         if (e.target.value != 'all') {
             const sortList = [...defaultList].filter(
                 (item, index, array) =>
-                    defaultList[index]._fieldsProto.language.stringValue == e.target.value
+                    defaultList[index]._fieldsProto.primaryLanguage.stringValue == e.target.value
             );
             setStarList(sortList);
         }
@@ -122,14 +177,14 @@ const Stares: React.FC<Props> = (props) => {
         const line = [...starList].sort(function (a, b) {
             if (e.target.value == 'down') {
                 if (
-                    a._fieldsProto.repositoryname.stringValue <
-                    b._fieldsProto.repositoryname.stringValue
+                    a._fieldsProto.name.stringValue <
+                    b._fieldsProto.name.stringValue
                 ) {
                     return -1;
                 }
                 if (
-                    a._fieldsProto.repositoryname.stringValue >
-                    b._fieldsProto.repositoryname.stringValue
+                    a._fieldsProto.name.stringValue >
+                    b._fieldsProto.name.stringValue
                 ) {
                     return 1;
                 }
@@ -137,14 +192,14 @@ const Stares: React.FC<Props> = (props) => {
                 return 0;
             }
             if (
-                a._fieldsProto.repositoryname.stringValue <
-                b._fieldsProto.repositoryname.stringValue
+                a._fieldsProto.name.stringValue <
+                b._fieldsProto.name.stringValue
             ) {
                 return 1;
             }
             if (
-                a._fieldsProto.repositoryname.stringValue >
-                b._fieldsProto.repositoryname.stringValue
+                a._fieldsProto.name.stringValue >
+                b._fieldsProto.name.stringValue
             ) {
                 return -1;
             }
@@ -159,10 +214,9 @@ const Stares: React.FC<Props> = (props) => {
             <Hedder>
                 お気に入り一覧
         <UserName>
-                    <UserIcon src="https://avatars0.githubusercontent.com/u/40754318?u=317d1aa7e970bafb23e4dd909767c94a26707c71&v=4" />
-          by <a href="https://github.com/UndyingSugimoto?tab=stars">Watason</a>
+                    <UserIcon src={userData._fieldsProto.avatarUrl.stringValue} /> by <a href={userData._fieldsProto.url.stringValue}>{userData._fieldsProto.login.stringValue}</a>
                     <Button>新規リポジトリー登録</Button>
-                    <Button onClick={e => { Test() }}>ログアウト</Button>
+                    <Button>ログアウト</Button>
                 </UserName>
             </Hedder>
       使用言語
@@ -192,12 +246,12 @@ const Stares: React.FC<Props> = (props) => {
                         <div>
                             <List>
                                 <ListHedder>
-                                    <UserIcon src="https://avatars0.githubusercontent.com/u/40754318?u=317d1aa7e970bafb23e4dd909767c94a26707c71&v=4" />
+                                    <UserIcon src={state._fieldsProto.ownerIcon.stringValue} />
                                     <ListTitl href={state._fieldsProto.url.stringValue}>
-                                        {state._fieldsProto.repositoryname.stringValue}
+                                        {state._fieldsProto.name.stringValue}
                                     </ListTitl>
                                 </ListHedder>
-                                <tr>●　{state._fieldsProto.language.stringValue}</tr>
+                                <tr>●　{state._fieldsProto.primaryLanguage.stringValue}</tr>
                                 <tr>
                                     Comment
                   <ListMemo>{state._fieldsProto.comment.stringValue}</ListMemo>

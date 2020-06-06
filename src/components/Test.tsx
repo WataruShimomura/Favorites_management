@@ -5,16 +5,16 @@ import gql from "graphql-tag";
 
 function Test() {
 
-    const client = axios.create({
-        baseURL: 'https://api.github.com/',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer d2b0858f0a5db5bf71887fba1452e72178ca4915`,
-        },
-    })
+  const client = axios.create({
+    baseURL: 'https://api.github.com/',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer d2b0858f0a5db5bf71887fba1452e72178ca4915`,
+    },
+  })
 
-    const query = `
+  const query = `
     query {    
         user(login: "WataruShimomura") {
           avatarUrl
@@ -41,7 +41,7 @@ function Test() {
   }
 }`
 
-    const response = client.post('graphql', { query }).then(function (result) { console.log(result.data) })
+  const response = client.post('graphql', { query }).then(function (result) { })
 }
 
 export default Test;

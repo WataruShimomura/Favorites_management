@@ -31,7 +31,7 @@ const Login: React.FC = () => {
         node {
           id
           name
-          resourcePath
+          url
           owner {
             login
             avatarUrl
