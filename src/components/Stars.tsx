@@ -78,7 +78,6 @@ const Stares: React.FC<Props> = (props) => {
     const [starList, setStarList] = React.useState<StarListObject[]>([
         defaultStarListState
     ]);
-    // フィルター機能を初期化するために使用する。
     const [defaultList, setDefaultList] = React.useState<StarListObject[]>([
         defaultStarListState
     ]);
@@ -97,7 +96,6 @@ const Stares: React.FC<Props> = (props) => {
             .catch(error => {
                 console.log('通信失敗1');
                 console.log(error);
-                // 失敗したときは空のjsonを返す
             });
 
         axios
@@ -114,7 +112,6 @@ const Stares: React.FC<Props> = (props) => {
             .catch(error => {
                 console.log('通信失敗2');
                 console.log(error);
-                // 失敗したときは空のjsonを返す
             });
     }, []);
 
@@ -126,12 +123,7 @@ const Stares: React.FC<Props> = (props) => {
         console.log(index);
         console.log(e.target.value);
         starList[index]._fieldsProto.comment.stringValue = e.target.value;
-        // const newlist = [...starList];
-        // setStarList(newlist)
-        // console.log(starList[index]._fieldsProto.comment.stringValue);
     };
-
-    console.log(`defaultlist=${defaultList[0]._fieldsProto.comment.stringValue}`);
 
     const UpdataComment = (
         e: React.MouseEvent<HTMLInputElement>,
@@ -144,7 +136,6 @@ const Stares: React.FC<Props> = (props) => {
         const reqRepository = `https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/addComment?repository=${repository}`;
         const reqComment = `&comment=${starList[index]._fieldsProto.comment.stringValue}`;
         const req = reqRepository + reqComment;
-        console.log(req);
         axios.get(req);
         starList[index]._fieldsProto.comment.stringValue =
             starList[index]._fieldsProto.comment.stringValue;
@@ -158,7 +149,10 @@ const Stares: React.FC<Props> = (props) => {
     ) => {
         console.log('実行3');
         const repository = starList[index]._ref._path.segments[5];
-        console.log(repository);
+        const newDefaultList = [...defaultList];
+        newDefaultList.splice(index, 1);
+        setStarList(newDefaultList);
+        setDefaultList(newDefaultList)
     };
 
     const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
