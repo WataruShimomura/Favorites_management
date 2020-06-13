@@ -175,10 +175,13 @@ export const addComment = functions
   .https.onRequest((request, response) => {
     response.set('Access-Control-Allow-Origin', 'http://localhost:3000');
     const setRepository = request.query.repository;
+    const setAcount = request.query.acount;
     const setComment = request.query.comment;
     const ref = admin
       .firestore()
-      .collection('/githubdb/userlist/userid/testacount/starlist/');
+      .collection('/githubdb/userlist/userid')
+      .doc(`${setAcount}`)
+      .collection('starlist');
     ref.doc(`${setRepository}`).update({
       comment: setComment
     });
