@@ -1,72 +1,26 @@
-import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 import StarList from './StarList';
-import StarListObject from '../../data/StarlistPayload';
-import UserDataObject from '../../data/UserDataPayload';
+import GetUserData from '../external/GetUserData';
+import GetStarData from '../external/GetStarData';
+import UserDataRes from '../external/data/UserDataRes';
+import StarDataRes from '../external/data/StarDataRes';
 
-const defaultUserState: UserDataObject = {
-  _fieldsProto: {
-    url: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    avatarUrl: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    login: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    }
-  },
-  _ref: {
-    _path: {
-      segments: ['', '', '', '']
-    }
-  }
+const defaultUserState: UserDataRes = {
+  url: '読み込み中...',
+  avatarUrl: '読み込み中...',
+  login: '読み込み中...'
 };
 
-const defaultStarListState: StarListObject = {
-  _fieldsProto: {
-    starId: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    ownerUrl: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    ownerIcon: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    primaryLanguage: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    ownerName: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    comment: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    url: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    },
-    name: {
-      stringValue: '読み込み中...',
-      valueType: ''
-    }
-  },
-  _ref: {
-    _path: {
-      segments: ['', '', '', '', '', '']
-    }
-  }
+const defaultStarListState: StarDataRes = {
+  starId: '読み込み中...',
+  ownerUrl: '読み込み中...',
+  ownerIcon: '読み込み中...',
+  primaryLanguage: '読み込み中...',
+  ownerName: '読み込み中...',
+  comment: '読み込み中...',
+  url: '読み込み中...',
+  name: '読み込み中...'
 };
 
 type Props = {
@@ -74,18 +28,16 @@ type Props = {
 };
 
 const Stars: React.FC<Props> = props => {
-  const [userData, setUserData] = React.useState<UserDataObject>(
-    defaultUserState
-  );
-  const [starList, setStarList] = React.useState<StarListObject[]>([
+  const [userData, setUserData] = React.useState<UserDataRes>(defaultUserState);
+  const [starList, setStarList] = React.useState<StarDataRes[]>([
     defaultStarListState
   ]);
-  const [defaultList, setDefaultList] = React.useState<StarListObject[]>([
+  const [defaultList, setDefaultList] = React.useState<StarDataRes[]>([
     defaultStarListState
   ]);
 
   // 子供のStarListに対して、自分自身を更新する関数を提供する
-  const updateStarInformation = (index: number, after: StarListObject) => {
+  const updateStarInformation = (index: number, after: StarDataRes) => {
     // コピーを作成
     const afterList = [...starList];
     // 更新後のstarをセット
@@ -94,7 +46,7 @@ const Stars: React.FC<Props> = props => {
   };
 
   const deleteStarList = (index: number) => {
-    const repository = starList[index]._ref._path.segments[5];
+    const repository = starList[index].starId;
     const newDefaultList = [...defaultList];
     newDefaultList.splice(index, 1);
     setStarList(newDefaultList);
@@ -102,38 +54,16 @@ const Stars: React.FC<Props> = props => {
   };
 
   React.useEffect(() => {
-    axios
-      .get<UserDataObject>(
-        'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/getsUserData?userId=' +
-          props.userName
-      )
-      .then(results => {
-        const returnJson = results;
-        setUserData(returnJson.data);
+    const userData = GetUserData(props.userName);
+    userData.then(results => {
+      setUserData(results);
+    });
 
-        return returnJson;
-      })
-      .catch(error => {
-        console.log('通信失敗1');
-        console.log(error);
-      });
-
-    axios
-      .get<StarListObject[]>(
-        'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/getsStarelist?userId=' +
-          props.userName
-      )
-      .then(results => {
-        const returnJson = results;
-        setStarList(returnJson.data);
-        setDefaultList(returnJson.data);
-
-        return returnJson;
-      })
-      .catch(error => {
-        console.log('通信失敗2');
-        console.log(error);
-      });
+    const starData = GetStarData(props.userName);
+    starData.then(results => {
+      setStarList(results);
+      setDefaultList(results);
+    });
   }, []);
 
   const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -142,8 +72,7 @@ const Stars: React.FC<Props> = props => {
     if (e.target.value != 'all') {
       const sortList = [...defaultList].filter(
         (item, index, array) =>
-          defaultList[index]._fieldsProto.primaryLanguage.stringValue ==
-          e.target.value
+          defaultList[index].primaryLanguage == e.target.value
       );
       setStarList(sortList);
     }
@@ -152,19 +81,19 @@ const Stars: React.FC<Props> = props => {
   const sortRepositoryname = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const line = [...starList].sort(function(a, b) {
       if (e.target.value == 'down') {
-        if (a._fieldsProto.name.stringValue < b._fieldsProto.name.stringValue) {
+        if (a.name < b.name) {
           return -1;
         }
-        if (a._fieldsProto.name.stringValue > b._fieldsProto.name.stringValue) {
+        if (a.name > b.name) {
           return 1;
         }
 
         return 0;
       }
-      if (a._fieldsProto.name.stringValue < b._fieldsProto.name.stringValue) {
+      if (a.name < b.name) {
         return 1;
       }
-      if (a._fieldsProto.name.stringValue > b._fieldsProto.name.stringValue) {
+      if (a.name > b.name) {
         return -1;
       }
 
@@ -241,9 +170,9 @@ const Stars: React.FC<Props> = props => {
       <Hedder>
         お気に入り一覧
         <UserName>
-          <UserIcon src={userData._fieldsProto.avatarUrl.stringValue} /> by{' '}
-          <a href={userData._fieldsProto.url.stringValue} target="_blank">
-            {userData._fieldsProto.login.stringValue}
+          <UserIcon src={userData.avatarUrl} /> by{' '}
+          <a href={userData.url} target="_blank">
+            {userData.login}
           </a>
           <LoginButton>新規リポジトリー登録</LoginButton>
           <LogoutButton>ログアウト</LogoutButton>
@@ -277,7 +206,7 @@ const Stars: React.FC<Props> = props => {
         {starList.map((state, index) => {
           return (
             <StarList
-              user={userData._fieldsProto.login.stringValue}
+              user={userData.login}
               stars={state}
               index={index}
               update={updateStarInformation}

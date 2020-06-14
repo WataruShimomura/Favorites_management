@@ -1,13 +1,13 @@
 import React from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
-import StarListObject from '../../data/StarlistPayload';
+import UpdataComment from '../external/UpdataComment';
+import StarDataRes from '../external/data/StarDataRes';
 
 type Props = {
   user: String;
-  stars: StarListObject;
+  stars: StarDataRes;
   index: number;
-  update: (index: number, after: StarListObject) => void;
+  update: (index: number, after: StarDataRes) => void;
   delete: (index: number) => void;
 };
 
@@ -15,19 +15,11 @@ const StarList: React.FC<Props> = props => {
   const [display, setDisplay] = React.useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.stars._fieldsProto.comment.stringValue = e.target.value;
+    props.stars.comment = e.target.value;
   };
 
-  const UpdataComment = () => {
-    const acount = props.user;
-    const repository = props.stars._ref._path.segments[5];
-    const reqRepository = `https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/addComment?repository=${repository}`;
-    const reqComment = `&comment=${props.stars._fieldsProto.comment.stringValue}`;
-    const reqAcount = `&acount=${acount}`;
-    const req = reqRepository + reqComment + reqAcount;
-    axios.get(req);
-    props.stars._fieldsProto.comment.stringValue =
-      props.stars._fieldsProto.comment.stringValue;
+  const updataComment = () => {
+    UpdataComment(props.user, props.stars.comment, props.stars.starId);
     props.update(props.index, props.stars);
     setDisplay(true);
   };
@@ -140,21 +132,17 @@ const StarList: React.FC<Props> = props => {
         </DeleteButton>
       </ListDetails>
       <ListHedder>
-        <UserIcon src={props.stars._fieldsProto.ownerIcon.stringValue} />
-        <ListTitl href={props.stars._fieldsProto.url.stringValue}>
-          {props.stars._fieldsProto.name.stringValue}
-        </ListTitl>
+        <UserIcon src={props.stars.ownerIcon} />
+        <ListTitl href={props.stars.url}>{props.stars.name}</ListTitl>
       </ListHedder>
       <div>
         primaryLanguage：
-        <ListLanguage>
-          {props.stars._fieldsProto.primaryLanguage.stringValue}
-        </ListLanguage>
+        <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
       </div>
       <div>
         Memo：
         {display ? (
-          <ListMemo>{props.stars._fieldsProto.comment.stringValue}</ListMemo>
+          <ListMemo>{props.stars.comment}</ListMemo>
         ) : (
           <label>
             <input
@@ -164,7 +152,7 @@ const StarList: React.FC<Props> = props => {
                 handleChange(e);
               }}
               onBlur={() => {
-                UpdataComment();
+                updataComment();
               }}
             />
           </label>
