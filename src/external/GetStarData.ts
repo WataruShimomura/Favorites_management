@@ -1,6 +1,6 @@
 import axios from 'axios';
-import StarListObject from '../../data/StarlistPayload';
-import StarDataRes from './data/StarDataRes';
+import StarListObject from './data/StarlistPayload';
+import StarDataRes from '../../data/StarDataRes';
 
 const getStarData = async (userName: String) => {
   const starData = await axios
@@ -16,9 +16,9 @@ const getStarData = async (userName: String) => {
       return null;
     });
 
-  var starDataRes: StarDataRes[] = [];
+  let starDataRes: StarDataRes[] = [];
 
-  if (starData !== null) {
+  if (starData) {
     starDataRes = shapingStarData(starData);
   }
 

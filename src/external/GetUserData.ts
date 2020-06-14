@@ -1,6 +1,6 @@
 import axios from 'axios';
-import UserDataObject from '../../data/UserDataPayload';
-import UserDataRes from './data/UserDataRes';
+import UserDataObject from './data/UserDataPayload';
+import UserDataRes from '../../data/UserDataRes';
 
 const getUserData = async (userName: String) => {
   const userData = await axios
@@ -16,13 +16,13 @@ const getUserData = async (userName: String) => {
       return null;
     });
 
-  var userDataRes: UserDataRes = {
+  let userDataRes: UserDataRes = {
     url: '読み込み中...',
     avatarUrl: '読み込み中...',
     login: '読み込み中...'
   };
 
-  if (userData !== null) {
+  if (userData) {
     userDataRes = shapingUserData(userData);
   }
 

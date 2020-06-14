@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import StarList from './StarItem';
 import GetUserData from '../external/GetUserData';
 import GetStarData from '../external/GetStarData';
-import UserDataRes from '../external/data/UserDataRes';
-import StarDataRes from '../external/data/StarDataRes';
+import UserDataRes from '../../data/UserDataRes';
+import StarDataRes from '../../data/StarDataRes';
 
 const defaultUserState: UserDataRes = {
   url: '読み込み中...',
@@ -27,7 +27,6 @@ type Props = {
   userName: string;
 };
 
-//ユーザー情報とユーザーが持つお気に入りの一覧とその情報を取得
 const Stars: React.FC<Props> = props => {
   const [userData, setUserData] = React.useState<UserDataRes>(defaultUserState);
   const [starList, setStarList] = React.useState<StarDataRes[]>([
@@ -36,6 +35,7 @@ const Stars: React.FC<Props> = props => {
   const [defaultList, setDefaultList] = React.useState<StarDataRes[]>([
     defaultStarListState
   ]);
+  const [primaryLanguages, setPrimaryLanguages] = React.useState<string[]>([]);
 
   // 子供のStarListに対して、自分自身を更新する関数を提供する
   const updateStarInformation = (index: number, after: StarDataRes) => {
@@ -54,21 +54,27 @@ const Stars: React.FC<Props> = props => {
     setDefaultList(newDefaultList);
   };
 
+  //ユーザー情報とユーザーが持つお気に入りの一覧とその情報を取得
   React.useEffect(() => {
-    const userData = GetUserData(props.userName);
-    userData.then(results => {
-      setUserData(results);
-    });
+    const initialize = async () => {
+      const userData = await GetUserData(props.userName);
+      setUserData(userData);
+      const starData = await GetStarData(props.userName);
+      setStarList(starData);
+      setDefaultList(starData);
+      let languageList = starData.map(state => {
+        return state.primaryLanguage;
+      });
+      const setLanguageList = languageList.filter(function(x, i, self) {
+        return self.indexOf(x) === i;
+      });
 
-    const starData = GetStarData(props.userName);
-    starData.then(results => {
-      setStarList(results);
-      setDefaultList(results);
-    });
+      setPrimaryLanguages(setLanguageList);
+    };
+    initialize();
   }, []);
 
   const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(`フィルタ実行、対象は${e.target.value}`);
     setStarList(defaultList);
     if (e.target.value != 'all') {
       const sortList = [...defaultList].filter(
@@ -173,9 +179,7 @@ const Stars: React.FC<Props> = props => {
         お気に入り一覧
         <UserName>
           <UserIcon src={userData.avatarUrl} /> by{' '}
-          <a href={userData.url} target="_blank">
-            {userData.login}
-          </a>
+          <a href={userData.url}>{userData.login}</a>
           <LoginButton>新規リポジトリー登録</LoginButton>
           <LogoutButton>ログアウト</LogoutButton>
         </UserName>
@@ -189,8 +193,9 @@ const Stars: React.FC<Props> = props => {
           }}
         >
           <option value="all">ALL</option>
-          <option value="Java">Java</option>
-          <option value="React">React</option>
+          {primaryLanguages.map(state => {
+            return <option value={state}>{state}</option>;
+          })}
         </SelectForm>
         sort:
         <SelectForm
@@ -204,7 +209,7 @@ const Stars: React.FC<Props> = props => {
         </SelectForm>
       </SortTag>
       <ListBack>
-        {!starList.values == undefined && <p>リストがありません！！</p>}
+        {!starList.values && <p>リストがありません！！</p>}
         {starList.map((state, index) => {
           return (
             <StarList

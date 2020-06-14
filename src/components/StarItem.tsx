@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import UpdataComment from '../external/UpdataComment';
-import StarDataRes from '../external/data/StarDataRes';
+import StarDataRes from '../../data/StarDataRes';
 
 type Props = {
   user: String;

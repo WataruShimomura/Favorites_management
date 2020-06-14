@@ -2,7 +2,7 @@ import React from 'react';
 import Stars from 'components/StarList';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import axios from 'axios';
-import UserDataObject from '../data/UserData';
+import UserDataObject from './external/data/GitUserDataPayload';
 
 const Login: React.FC = () => {
   const [userData, setUserData] = React.useState<UserDataObject>();
