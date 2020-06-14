@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
+import StarList from './StarList';
 import StarListObject from '../../data/StarlistPayload';
 import UserDataObject from '../../data/UserDataPayload';
 
@@ -72,7 +73,7 @@ type Props = {
   userName: string;
 };
 
-const Stares: React.FC<Props> = props => {
+const Stars: React.FC<Props> = props => {
   const [userData, setUserData] = React.useState<UserDataObject>(
     defaultUserState
   );
@@ -82,7 +83,23 @@ const Stares: React.FC<Props> = props => {
   const [defaultList, setDefaultList] = React.useState<StarListObject[]>([
     defaultStarListState
   ]);
-  const [display, setDisplay] = React.useState(true);
+
+  // 子供のStarListに対して、自分自身を更新する関数を提供する
+  const updateStarInformation = (index: number, after: StarListObject) => {
+    // コピーを作成
+    const afterList = [...starList];
+    // 更新後のstarをセット
+    afterList[index] = after;
+    setStarList(afterList);
+  };
+
+  const deleteStarList = (index: number) => {
+    const repository = starList[index]._ref._path.segments[5];
+    const newDefaultList = [...defaultList];
+    newDefaultList.splice(index, 1);
+    setStarList(newDefaultList);
+    setDefaultList(newDefaultList);
+  };
 
   React.useEffect(() => {
     axios
@@ -119,39 +136,6 @@ const Stares: React.FC<Props> = props => {
       });
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    starList[index]._fieldsProto.comment.stringValue = e.target.value;
-  };
-
-  const UpdataComment = (index: number) => {
-    const acount = userData._fieldsProto.login.stringValue;
-    const repository = starList[index]._ref._path.segments[5];
-    const reqRepository = `https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/addComment?repository=${repository}`;
-    const reqComment = `&comment=${starList[index]._fieldsProto.comment.stringValue}`;
-    const reqAcount = `&acount=${acount}`;
-    const req = reqRepository + reqComment + reqAcount;
-    axios.get(req);
-    starList[index]._fieldsProto.comment.stringValue =
-      starList[index]._fieldsProto.comment.stringValue;
-    const newlist = [...starList];
-    setStarList(newlist);
-    setDisplay(true);
-  };
-
-  const deleteRepository = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    index: number
-  ) => {
-    const repository = starList[index]._ref._path.segments[5];
-    const newDefaultList = [...defaultList];
-    newDefaultList.splice(index, 1);
-    setStarList(newDefaultList);
-    setDefaultList(newDefaultList);
-  };
-
   const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(`フィルタ実行、対象は${e.target.value}`);
     setStarList(defaultList);
@@ -187,10 +171,6 @@ const Stares: React.FC<Props> = props => {
       return 0;
     });
     setStarList(line);
-  };
-
-  const commentDisplay = (display: boolean) => {
-    display ? setDisplay(false) : setDisplay(true);
   };
 
   const Hedder = styled.h1`
@@ -248,81 +228,12 @@ const Stares: React.FC<Props> = props => {
     margin-left: 15px;
   `;
 
-  const DeleteButton = styled(ButtonStyled)`
-    background: #808000;
-    color: #fff;
-    position: relative;
-    left: 90%;
-  `;
-
-  const StarList = styled.div`
+  const StarListBack = styled.div`
     display: flex;
     flex-wrap: wrap;
     background: #ddd;
     width: 100%;
     height: auto;
-  `;
-
-  const ListComponent = styled.div`
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-    text-decoration: none;
-    position: relative;
-    z-index: 1;
-  `;
-
-  const StarListLayout = styled(ListComponent)`
-    margin-top: 10px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    padding: 15px;
-    width: 29%;
-  `;
-
-  const ListDetails = styled.details`
-    width: 20%;
-    position: relative;
-    z-index: 2;
-    display: flex;
-    cursor: pointer;
-  `;
-
-  const ListHedder = styled.h2`
-    background: #fff;
-    border-bottom: 1px solid #aaa;
-  `;
-
-  const ListTitl = styled.a`
-    text-decoration: inherit;
-    text-align: center;
-    position: absolute;
-  `;
-
-  //     const ListMenu = styled.span`
-  //   right: 10%
-  //   `
-  const ListLanguage = styled.span`
-    background: #ddd;
-    border-radius: 3px;
-    border: 1px solid #aaa;
-    padding: 3px;
-  `;
-
-  const ListMemo = styled.span`
-    background: #fff;
-    border-bottom: 1px solid #aaa;
-  `;
-
-  const CommentDetails = styled.details`
-    border: 1px solid #aaa;
-    width: 35%;
-  `;
-  const CommentSummary = styled.summary`
-    position: relative;
-    z-index: 2;
-    padding: 0.5em;
   `;
 
   return (
@@ -361,63 +272,20 @@ const Stares: React.FC<Props> = props => {
           <option value="up">昇順</option>
         </SelectForm>
       </SortTag>
-      <StarList>
+      <StarListBack>
         {!starList.values == undefined && <p>リストがありません！！</p>}
         {starList.map((state, index) => {
           return (
-            <StarListLayout>
-              <ListDetails>
-                <CommentSummary>...</CommentSummary>
-                <input
-                  type="button"
-                  value="コメント更新"
-                  onClick={e => {
-                    commentDisplay(display);
-                  }}
-                />
-                <DeleteButton
-                  onClick={e => {
-                    deleteRepository(e, index);
-                  }}
-                >
-                  消去
-                </DeleteButton>
-              </ListDetails>
-              <ListHedder>
-                <UserIcon src={state._fieldsProto.ownerIcon.stringValue} />
-                <ListTitl href={state._fieldsProto.url.stringValue}>
-                  {state._fieldsProto.name.stringValue}
-                </ListTitl>
-              </ListHedder>
-              <div>
-                primaryLanguage：
-                <ListLanguage>
-                  {state._fieldsProto.primaryLanguage.stringValue}
-                </ListLanguage>
-              </div>
-              <div>
-                Memo：
-                {display ? (
-                  <ListMemo>{state._fieldsProto.comment.stringValue}</ListMemo>
-                ) : (
-                  <label>
-                    <input
-                      type="text"
-                      placeholder="コメントを入力"
-                      onChange={e => {
-                        handleChange(e, index);
-                      }}
-                      onBlur={() => {
-                        UpdataComment(index);
-                      }}
-                    />
-                  </label>
-                )}
-              </div>
-            </StarListLayout>
+            <StarList
+              user={userData._fieldsProto.login.stringValue}
+              stars={state}
+              index={index}
+              update={updateStarInformation}
+              delete={deleteStarList}
+            />
           );
         })}
-      </StarList>
+      </StarListBack>
       <div>
         <a href="#">▲　ページトップへ</a>
       </div>
@@ -425,4 +293,4 @@ const Stares: React.FC<Props> = props => {
   );
 };
 
-export default Stares;
+export default Stars;
