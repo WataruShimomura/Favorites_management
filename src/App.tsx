@@ -1,5 +1,5 @@
 import React from 'react';
-import Stars from 'components/Stars';
+import Stars from 'components/StarList';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import UserDataObject from '../data/UserData';

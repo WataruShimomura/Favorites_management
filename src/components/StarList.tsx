@@ -1,36 +1,124 @@
 import React from 'react';
 import styled from 'styled-components';
-import UpdataComment from '../external/UpdataComment';
+import StarList from './StarItem';
+import GetUserData from '../external/GetUserData';
+import GetStarData from '../external/GetStarData';
+import UserDataRes from '../external/data/UserDataRes';
 import StarDataRes from '../external/data/StarDataRes';
 
-type Props = {
-  user: String;
-  stars: StarDataRes;
-  index: number;
-  update: (index: number, after: StarDataRes) => void;
-  delete: (index: number) => void;
+const defaultUserState: UserDataRes = {
+  url: '読み込み中...',
+  avatarUrl: '読み込み中...',
+  login: '読み込み中...'
 };
 
-const StarList: React.FC<Props> = props => {
-  const [display, setDisplay] = React.useState(true);
+const defaultStarListState: StarDataRes = {
+  starId: '読み込み中...',
+  ownerUrl: '読み込み中...',
+  ownerIcon: '読み込み中...',
+  primaryLanguage: '読み込み中...',
+  ownerName: '読み込み中...',
+  comment: '読み込み中...',
+  url: '読み込み中...',
+  name: '読み込み中...'
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.stars.comment = e.target.value;
+type Props = {
+  userName: string;
+};
+
+//ユーザー情報とユーザーが持つお気に入りの一覧とその情報を取得
+const Stars: React.FC<Props> = props => {
+  const [userData, setUserData] = React.useState<UserDataRes>(defaultUserState);
+  const [starList, setStarList] = React.useState<StarDataRes[]>([
+    defaultStarListState
+  ]);
+  const [defaultList, setDefaultList] = React.useState<StarDataRes[]>([
+    defaultStarListState
+  ]);
+
+  // 子供のStarListに対して、自分自身を更新する関数を提供する
+  const updateStarInformation = (index: number, after: StarDataRes) => {
+    // コピーを作成
+    const afterList = [...starList];
+    // 更新後のstarをセット
+    afterList[index] = after;
+    setStarList(afterList);
   };
 
-  const updataComment = () => {
-    UpdataComment(props.user, props.stars.comment, props.stars.starId);
-    props.update(props.index, props.stars);
-    setDisplay(true);
+  const deleteStarList = (index: number) => {
+    const repository = starList[index].starId;
+    const newDefaultList = [...defaultList];
+    newDefaultList.splice(index, 1);
+    setStarList(newDefaultList);
+    setDefaultList(newDefaultList);
   };
 
-  const deleteRepository = () => {
-    props.delete(props.index);
+  React.useEffect(() => {
+    const userData = GetUserData(props.userName);
+    userData.then(results => {
+      setUserData(results);
+    });
+
+    const starData = GetStarData(props.userName);
+    starData.then(results => {
+      setStarList(results);
+      setDefaultList(results);
+    });
+  }, []);
+
+  const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(`フィルタ実行、対象は${e.target.value}`);
+    setStarList(defaultList);
+    if (e.target.value != 'all') {
+      const sortList = [...defaultList].filter(
+        (item, index, array) =>
+          defaultList[index].primaryLanguage == e.target.value
+      );
+      setStarList(sortList);
+    }
   };
 
-  const commentDisplay = (display: boolean) => {
-    display ? setDisplay(false) : setDisplay(true);
+  const sortRepositoryname = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const line = [...starList].sort(function(a, b) {
+      if (e.target.value == 'down') {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+
+        return 0;
+      }
+      if (a.name < b.name) {
+        return 1;
+      }
+      if (a.name > b.name) {
+        return -1;
+      }
+
+      return 0;
+    });
+    setStarList(line);
   };
+
+  //styled-components
+  const Hedder = styled.h1`
+    background: #24292e;
+    color: hsla(0, 0%, 100%);
+    margin: 0%;
+    text-align: center;
+    width: 100%;
+    padding: 5px;
+  `;
+
+  const UserName = styled.div`
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
 
   const UserIcon = styled.img`
     border-radius: 10px;
@@ -50,116 +138,90 @@ const StarList: React.FC<Props> = props => {
     cursor: pointer;
   `;
 
-  const DeleteButton = styled(ButtonStyled)`
+  const LoginButton = styled(ButtonStyled)`
+    background: #668ad8;
+    color: #fff;
+    margin-left: 15px;
+  `;
+
+  const LogoutButton = styled(ButtonStyled)`
     background: #808000;
     color: #fff;
-    position: relative;
-    left: 90%;
+    margin-left: 15px;
   `;
 
-  const ListComponent = styled.div`
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-    text-decoration: none;
-    position: relative;
-    z-index: 1;
+  const SortTag = styled.div`
+    padding: 5px;
   `;
 
-  const StarListLayout = styled(ListComponent)`
-    margin-top: 10px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    padding: 15px;
-    width: 29%;
+  const SelectForm = styled.select`
+    margin-right: 15px;
+    margin-left: 15px;
   `;
 
-  const ListDetails = styled.details`
-    width: 20%;
-    position: relative;
-    z-index: 2;
+  const ListBack = styled.div`
     display: flex;
-    cursor: pointer;
-  `;
-
-  const ListHedder = styled.h2`
-    background: #fff;
-    border-bottom: 1px solid #aaa;
-  `;
-
-  const ListTitl = styled.a`
-    text-decoration: inherit;
-    text-align: center;
-    position: absolute;
-  `;
-
-  const ListLanguage = styled.span`
+    flex-wrap: wrap;
     background: #ddd;
-    border-radius: 3px;
-    border: 1px solid #aaa;
-    padding: 3px;
-  `;
-
-  const ListMemo = styled.span`
-    background: #fff;
-    border-bottom: 1px solid #aaa;
-  `;
-
-  const CommentSummary = styled.summary`
-    position: relative;
-    z-index: 2;
-    padding: 0.5em;
+    width: 100%;
+    height: auto;
   `;
 
   return (
-    <StarListLayout>
-      <ListDetails>
-        <CommentSummary>...</CommentSummary>
-        <input
-          type="button"
-          value="コメント更新"
-          onClick={e => {
-            commentDisplay(display);
-          }}
-        />
-        <DeleteButton
-          onClick={() => {
-            deleteRepository();
+    <div>
+      <Hedder>
+        お気に入り一覧
+        <UserName>
+          <UserIcon src={userData.avatarUrl} /> by{' '}
+          <a href={userData.url} target="_blank">
+            {userData.login}
+          </a>
+          <LoginButton>新規リポジトリー登録</LoginButton>
+          <LogoutButton>ログアウト</LogoutButton>
+        </UserName>
+      </Hedder>
+      <SortTag>
+        PrimaryLanguage:
+        <SelectForm
+          name="PrimaryLanguage"
+          onChange={e => {
+            filterLanguage(e);
           }}
         >
-          消去
-        </DeleteButton>
-      </ListDetails>
-      <ListHedder>
-        <UserIcon src={props.stars.ownerIcon} />
-        <ListTitl href={props.stars.url}>{props.stars.name}</ListTitl>
-      </ListHedder>
-      <div>
-        primaryLanguage：
-        <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
-      </div>
-      <div>
-        Memo：
-        {display ? (
-          <ListMemo>{props.stars.comment}</ListMemo>
-        ) : (
-          <label>
-            <input
-              type="text"
-              placeholder="コメントを入力"
-              onChange={e => {
-                handleChange(e);
-              }}
-              onBlur={() => {
-                updataComment();
-              }}
+          <option value="all">ALL</option>
+          <option value="Java">Java</option>
+          <option value="React">React</option>
+        </SelectForm>
+        sort:
+        <SelectForm
+          name="リポジトリ名"
+          onChange={e => {
+            sortRepositoryname(e);
+          }}
+        >
+          <option value="down">降順</option>
+          <option value="up">昇順</option>
+        </SelectForm>
+      </SortTag>
+      <ListBack>
+        {!starList.values == undefined && <p>リストがありません！！</p>}
+        {starList.map((state, index) => {
+          return (
+            <StarList
+              user={userData.login}
+              stars={state}
+              index={index}
+              update={updateStarInformation}
+              delete={deleteStarList}
             />
-          </label>
-        )}
+          );
+        })}
+      </ListBack>
+      <div>
+        <a href="#">▲　ページトップへ</a>
       </div>
-    </StarListLayout>
+    </div>
   );
 };
 
-export default StarList;
+export default Stars;
