@@ -1,4 +1,4 @@
-export default interface UserData {
+export default interface GitUserData {
   data: {
     user: {
       avatarUrl: string;
