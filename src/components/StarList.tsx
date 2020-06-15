@@ -62,14 +62,14 @@ const Stars: React.FC<Props> = props => {
       const starData = await GetStarData(props.userName);
       setStarList(starData);
       setDefaultList(starData);
-      let languageList = starData.map(state => {
-        return state.primaryLanguage;
+      const languageList = starData.map(item => {
+        return item.primaryLanguage;
       });
-      const setLanguageList = languageList.filter(function(x, i, self) {
-        return self.indexOf(x) === i;
+      const uniqueLanguageList = languageList.filter(function(value, i, self) {
+        return self.indexOf(value) === i;
       });
 
-      setPrimaryLanguages(setLanguageList);
+      setPrimaryLanguages(uniqueLanguageList);
     };
     initialize();
   }, []);
@@ -78,8 +78,7 @@ const Stars: React.FC<Props> = props => {
     setStarList(defaultList);
     if (e.target.value != 'all') {
       const sortList = [...defaultList].filter(
-        (item, index, array) =>
-          defaultList[index].primaryLanguage == e.target.value
+        item => item.primaryLanguage == e.target.value
       );
       setStarList(sortList);
     }
@@ -110,7 +109,7 @@ const Stars: React.FC<Props> = props => {
   };
 
   //styled-components
-  const Hedder = styled.h1`
+  const Header = styled.h1`
     background: #24292e;
     color: hsla(0, 0%, 100%);
     margin: 0%;
@@ -175,7 +174,7 @@ const Stars: React.FC<Props> = props => {
 
   return (
     <div>
-      <Hedder>
+      <Header>
         お気に入り一覧
         <UserName>
           <UserIcon src={userData.avatarUrl} /> by{' '}
@@ -183,7 +182,7 @@ const Stars: React.FC<Props> = props => {
           <LoginButton>新規リポジトリー登録</LoginButton>
           <LogoutButton>ログアウト</LogoutButton>
         </UserName>
-      </Hedder>
+      </Header>
       <SortTag>
         PrimaryLanguage:
         <SelectForm
@@ -193,8 +192,8 @@ const Stars: React.FC<Props> = props => {
           }}
         >
           <option value="all">ALL</option>
-          {primaryLanguages.map(state => {
-            return <option value={state}>{state}</option>;
+          {primaryLanguages.map(item => {
+            return <option value={item}>{item}</option>;
           })}
         </SelectForm>
         sort:

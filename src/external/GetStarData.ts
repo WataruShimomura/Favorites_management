@@ -16,13 +16,7 @@ const getStarData = async (userName: String) => {
       return null;
     });
 
-  let starDataRes: StarDataRes[] = [];
-
-  if (starData) {
-    starDataRes = shapingStarData(starData);
-  }
-
-  return starDataRes;
+  return starData ? shapingStarData(starData) : [];
 };
 
 const shapingStarData = (userData: StarListObject[]) => {

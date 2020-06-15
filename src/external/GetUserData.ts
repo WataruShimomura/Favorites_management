@@ -16,17 +16,13 @@ const getUserData = async (userName: String) => {
       return null;
     });
 
-  let userDataRes: UserDataRes = {
+  const loadingData: UserDataRes = {
     url: '読み込み中...',
     avatarUrl: '読み込み中...',
     login: '読み込み中...'
   };
 
-  if (userData) {
-    userDataRes = shapingUserData(userData);
-  }
-
-  return userDataRes;
+  return userData ? shapingUserData(userData) : loadingData;
 };
 
 const shapingUserData = (userData: UserDataObject) => {
