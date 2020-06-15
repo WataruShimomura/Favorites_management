@@ -1,23 +1,21 @@
 import React from 'react';
-import Stars from 'components/Stars';
+import Stars from 'components/StarList';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import axios from 'axios';
-import UserDataObject from '../data/UserData';
+import UserDataObject from './external/data/GitUserDataPayload';
 
 const Login: React.FC = () => {
-
   const [userData, setUserData] = React.useState<UserDataObject>();
 
   function Test() {
-
     const client = axios.create({
       baseURL: 'https://api.github.com/',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer d2b0858f0a5db5bf71887fba1452e72178ca4915`,
-      },
-    })
+        Accept: 'application/json',
+        Authorization: 'Bearer d2b0858f0a5db5bf71887fba1452e72178ca4915'
+      }
+    });
 
     const query = `
     query {    
@@ -44,26 +42,42 @@ const Login: React.FC = () => {
       }
     }
   }
-}`
+}`;
 
-    client.post('graphql', { query }).then(function (result) { setUserData(result.data); })
+    client.post('graphql', { query }).then(function(result) {
+      setUserData(result.data);
+    });
   }
 
   const out = () => {
-    var test = JSON.stringify(userData)
-    console.log(test)
-    axios.post('https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/registration/', test, {
-      headers: {
-        'content-type': 'application/json'
+    const test = JSON.stringify(userData);
+    axios.post(
+      'https://asia-northeast1-githubdb-d71b1.cloudfunctions.net/registration/',
+      test,
+      {
+        headers: {
+          'content-type': 'application/json'
+        }
       }
-    })
-  }
-
+    );
+  };
 
   return (
     <div>
-      <button onClick={e => { Test() }}>set</button>
-      <button onClick={e => { out() }}>out</button>
+      <button
+        onClick={() => {
+          Test();
+        }}
+      >
+        set
+      </button>
+      <button
+        onClick={() => {
+          out();
+        }}
+      >
+        out
+      </button>
       <h1>GitHub_Stars管理ツール</h1>
       <Link to="/mainpage">
         <button>ログイン</button>
@@ -98,8 +112,7 @@ const Entry = () => {
 const Mainpage = () => {
   return (
     <div>
-      <Stars
-        userName='WataruShimomura' />
+      <Stars userName="WataruShimomura" />
     </div>
   );
 };
