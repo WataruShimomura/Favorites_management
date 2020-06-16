@@ -118,8 +118,11 @@ const Stars: React.FC<Props> = props => {
     padding: 5px;
   `;
 
+  const Interval = styled.span`
+    margin: 10px;
+  `;
+
   const UserName = styled.div`
-    margin: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -157,6 +160,7 @@ const Stars: React.FC<Props> = props => {
 
   const SortTag = styled.div`
     padding: 5px;
+    margin-left: 15px;
   `;
 
   const SelectForm = styled.select`
@@ -172,19 +176,25 @@ const Stars: React.FC<Props> = props => {
     height: auto;
   `;
 
+  const PeageTop = styled.a`
+    float: right;
+    margin: 15px;
+  `;
+
   return (
     <div>
       <Header>
         お気に入り一覧
         <UserName>
-          <UserIcon src={userData.avatarUrl} /> by{' '}
+          <UserIcon src={userData.avatarUrl} />
+          <Interval>by</Interval>
           <a href={userData.url}>{userData.login}</a>
           <LoginButton>新規リポジトリー登録</LoginButton>
           <LogoutButton>ログアウト</LogoutButton>
         </UserName>
       </Header>
       <SortTag>
-        PrimaryLanguage:
+        主要言語:
         <SelectForm
           name="PrimaryLanguage"
           onChange={e => {
@@ -196,7 +206,7 @@ const Stars: React.FC<Props> = props => {
             return <option value={item}>{item}</option>;
           })}
         </SelectForm>
-        sort:
+        タイトル並べ替え:
         <SelectForm
           name="リポジトリ名"
           onChange={e => {
@@ -222,7 +232,7 @@ const Stars: React.FC<Props> = props => {
         })}
       </ListBack>
       <div>
-        <a href="#">▲　ページトップへ</a>
+        <PeageTop href="#">▲　ページトップへ</PeageTop>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ const StarList: React.FC<Props> = props => {
   const UserIcon = styled.img`
     border-radius: 10px;
     height: 30px;
-    margin-right: 15px;
+    margin: 5px;
     text-align: center;
     width: 30px;
     vertical-align: middle;
@@ -68,20 +68,22 @@ const StarList: React.FC<Props> = props => {
   `;
 
   const ListLayout = styled(ListComponent)`
-    margin-top: 10px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    margin-left: 20px;
+    margin-top: 14px;
+    margin-right: 10px;
+    margin-bottom: 14px;
+    margin-left: 10px;
     padding: 15px;
-    width: 29%;
+    width: 22%;
   `;
 
   const ListDetails = styled.details`
-    width: 20%;
+    width: 10%;
     position: relative;
     z-index: 2;
     display: flex;
     cursor: pointer;
+    font-size: 10px;
+    float: right;
   `;
 
   const ListHeader = styled.h2`
@@ -92,56 +94,62 @@ const StarList: React.FC<Props> = props => {
   const ListTitle = styled.a`
     text-decoration: inherit;
     text-align: center;
-    position: absolute;
+    position: relative;
   `;
 
   const ListLanguage = styled.span`
     background: #ddd;
+    font-size: 14px;
     border-radius: 3px;
     border: 1px solid #aaa;
     padding: 3px;
+    margin: 10px;
   `;
 
   const ListMemo = styled.span`
     background: #fff;
     border-bottom: 1px solid #aaa;
+    margin-left: 10px;
   `;
 
   const CommentSummary = styled.summary`
     position: relative;
     z-index: 2;
     padding: 0.5em;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   `;
 
   return (
     <ListLayout>
-      <ListDetails>
-        <CommentSummary>...</CommentSummary>
-        <input
-          type="button"
-          value="コメント更新"
-          onClick={e => {
-            openDisplay(display);
-          }}
-        />
-        <DeleteButton
-          onClick={() => {
-            deleteRepository();
-          }}
-        >
-          消去
-        </DeleteButton>
-      </ListDetails>
       <ListHeader>
         <UserIcon src={props.stars.ownerIcon} />
         <ListTitle href={props.stars.url}>{props.stars.name}</ListTitle>
+        <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
+        <ListDetails>
+          <CommentSummary>...</CommentSummary>
+          <input
+            type="button"
+            value="コメント更新"
+            onClick={e => {
+              openDisplay(display);
+            }}
+          />
+          <DeleteButton
+            onClick={() => {
+              deleteRepository();
+            }}
+          >
+            消去
+          </DeleteButton>
+        </ListDetails>
       </ListHeader>
       <div>
-        primaryLanguage：
-        <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
+        <em>Memo</em>
       </div>
       <div>
-        Memo：
         {display ? (
           <ListMemo>{props.stars.comment}</ListMemo>
         ) : (
