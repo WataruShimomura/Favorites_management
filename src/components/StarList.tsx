@@ -166,6 +166,7 @@ const Stars: React.FC<Props> = props => {
   const SelectForm = styled.select`
     margin-right: 15px;
     margin-left: 15px;
+    height: 25px;
   `;
 
   const ListBack = styled.div`

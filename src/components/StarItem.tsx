@@ -72,7 +72,10 @@ const StarList: React.FC<Props> = props => {
     margin-right: 10px;
     margin-bottom: 14px;
     margin-left: 10px;
-    padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     width: 22%;
   `;
 
@@ -86,7 +89,7 @@ const StarList: React.FC<Props> = props => {
     float: right;
   `;
 
-  const ListHeader = styled.h2`
+  const ListHeader = styled.div`
     background: #fff;
     border-bottom: 1px solid #aaa;
   `;
@@ -95,6 +98,7 @@ const StarList: React.FC<Props> = props => {
     text-decoration: inherit;
     text-align: center;
     position: relative;
+    font-size: 23px;
   `;
 
   const ListLanguage = styled.span`
@@ -104,6 +108,10 @@ const StarList: React.FC<Props> = props => {
     border: 1px solid #aaa;
     padding: 3px;
     margin: 10px;
+  `;
+
+  const ListMemoItem = styled.div`
+    margin: 5px;
   `;
 
   const ListMemo = styled.span`
@@ -147,7 +155,7 @@ const StarList: React.FC<Props> = props => {
         </ListDetails>
       </ListHeader>
       <div>
-        <em>Memo</em>
+        <ListMemoItem>Memo</ListMemoItem>
       </div>
       <div>
         {display ? (
