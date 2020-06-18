@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import UpdataComment from '../external/UpdataComment';
+import { listTitleFormatter } from '../util/ListTitleFormatter';
 import StarDataRes from '../../data/StarDataRes';
 
 type Props = {
@@ -134,7 +135,9 @@ const StarList: React.FC<Props> = props => {
     <ListLayout>
       <ListHeader>
         <UserIcon src={props.stars.ownerIcon} />
-        <ListTitle href={props.stars.url}>{props.stars.name}</ListTitle>
+        <ListTitle href={props.stars.url}>
+          {listTitleFormatter(props.stars.name)}
+        </ListTitle>
         <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
         <ListDetails>
           <CommentSummary>...</CommentSummary>
