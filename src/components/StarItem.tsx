@@ -74,9 +74,12 @@ const StarList: React.FC<Props> = props => {
     font-size: 10px;
     float: right;
     text-align: center;
-    background: #0ff;
     border-radius: 10px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+
+    &:hover {
+      background: #eee;
+      border-radius: 3px;
+    }
   `;
 
   const ListMenu = styled.div`
@@ -85,6 +88,7 @@ const StarList: React.FC<Props> = props => {
     text-align: center;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
     float: right;
+    border-radius: 10px;
   `;
 
   const MenuContents = styled.div`
@@ -92,12 +96,12 @@ const StarList: React.FC<Props> = props => {
     margin: 10px;
     font-size: 11px;
     text-align: center;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid #ddd;
 
     &:hover {
-      background: #ddd;
+      background: #eee;
       box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.4);
-      border-radius: 10px;
+      border-radius: 3px;
     }
   `;
 
