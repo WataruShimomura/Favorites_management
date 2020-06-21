@@ -63,12 +63,13 @@ const StarList: React.FC<Props> = props => {
     padding-left: 15px;
     padding-right: 15px;
     width: 22%;
+    height: 110px;
   `;
 
   const ListDetails = styled.details`
     width: 25px;
     position: relative;
-    z-index: 0;
+    z-index: 2;
     display: flex;
     cursor: pointer;
     font-size: 10px;
@@ -83,6 +84,7 @@ const StarList: React.FC<Props> = props => {
   `;
 
   const ListMenu = styled.div`
+    z-index: 2;
     width: 100px;
     background: #fff;
     text-align: center;
@@ -97,6 +99,7 @@ const StarList: React.FC<Props> = props => {
     font-size: 11px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    z-index: 2;
 
     &:hover {
       background: #eee;
@@ -132,8 +135,7 @@ const StarList: React.FC<Props> = props => {
 
   const ListMemo = styled.span`
     background: #fff;
-    border-bottom: 1px solid #aaa;
-    margin-left: 10px;
+    word-wrap: break-word;
   `;
 
   const CommentSummary = styled.summary`

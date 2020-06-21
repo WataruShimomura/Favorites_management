@@ -36,6 +36,8 @@ const Stars: React.FC<Props> = props => {
     defaultStarListState
   ]);
   const [primaryLanguages, setPrimaryLanguages] = React.useState<string[]>([]);
+  const [selectLanguages, setSelectLanguages] = React.useState('ALL');
+  const [selectSort, setSelectSort] = React.useState('down');
 
   // 子供のStarListに対して、自分自身を更新する関数を提供する
   const updateStarInformation = (index: number, after: StarDataRes) => {
@@ -75,6 +77,7 @@ const Stars: React.FC<Props> = props => {
   }, []);
 
   const filterLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectLanguages(e.target.value);
     setStarList(defaultList);
     if (e.target.value != 'all') {
       const sortList = [...defaultList].filter(
@@ -85,6 +88,7 @@ const Stars: React.FC<Props> = props => {
   };
 
   const sortRepositoryname = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectSort(e.target.value);
     const line = [...starList].sort(function(a, b) {
       if (e.target.value == 'down') {
         if (a.name < b.name) {
@@ -198,6 +202,7 @@ const Stars: React.FC<Props> = props => {
         主要言語:
         <SelectForm
           name="PrimaryLanguage"
+          value={selectLanguages}
           onChange={e => {
             filterLanguage(e);
           }}
@@ -210,6 +215,7 @@ const Stars: React.FC<Props> = props => {
         タイトル並べ替え:
         <SelectForm
           name="リポジトリ名"
+          value={selectSort}
           onChange={e => {
             sortRepositoryname(e);
           }}
