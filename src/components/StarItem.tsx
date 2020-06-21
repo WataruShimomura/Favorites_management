@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import UpdataComment from '../external/UpdataComment';
 import { listTitleFormatter } from '../util/ListTitleFormatter';
 import StarDataRes from '../../data/StarDataRes';
+import icon from './../static/memuicon.png';
 
 type Props = {
   user: String;
@@ -43,22 +44,6 @@ const StarList: React.FC<Props> = props => {
     vertical-align: middle;
   `;
 
-  const ButtonStyled = styled.button`
-    display: inline-block;
-    padding: 0.5em 1em;
-    text-decoration: none;
-    border-radius: 3px;
-    vertical-align: middle;
-    cursor: pointer;
-  `;
-
-  const DeleteButton = styled(ButtonStyled)`
-    background: #808000;
-    color: #fff;
-    position: relative;
-    left: 90%;
-  `;
-
   const ListComponent = styled.div`
     background: #fff;
     border-radius: 10px;
@@ -81,13 +66,43 @@ const StarList: React.FC<Props> = props => {
   `;
 
   const ListDetails = styled.details`
-    width: 10%;
+    width: 25px;
     position: relative;
-    z-index: 2;
+    z-index: 0;
     display: flex;
     cursor: pointer;
     font-size: 10px;
     float: right;
+    text-align: center;
+    border-radius: 10px;
+
+    &:hover {
+      background: #eee;
+      border-radius: 3px;
+    }
+  `;
+
+  const ListMenu = styled.div`
+    width: 100px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    float: right;
+    border-radius: 10px;
+  `;
+
+  const MenuContents = styled.div`
+    cursor: pointer;
+    margin: 10px;
+    font-size: 11px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+
+    &:hover {
+      background: #eee;
+      box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.4);
+      border-radius: 3px;
+    }
   `;
 
   const ListHeader = styled.div`
@@ -140,21 +155,25 @@ const StarList: React.FC<Props> = props => {
         </ListTitle>
         <ListLanguage>{props.stars.primaryLanguage}</ListLanguage>
         <ListDetails>
-          <CommentSummary>...</CommentSummary>
-          <input
-            type="button"
-            value="コメント更新"
-            onClick={e => {
-              openDisplay(display);
-            }}
-          />
-          <DeleteButton
-            onClick={() => {
-              deleteRepository();
-            }}
-          >
-            消去
-          </DeleteButton>
+          <CommentSummary>
+            <img src={icon} width="13" height="13" />
+          </CommentSummary>
+          <ListMenu>
+            <MenuContents
+              onClick={e => {
+                openDisplay(display);
+              }}
+            >
+              メモ編集
+            </MenuContents>
+            <MenuContents
+              onClick={() => {
+                deleteRepository();
+              }}
+            >
+              お気に入り消去
+            </MenuContents>
+          </ListMenu>
         </ListDetails>
       </ListHeader>
       <div>
@@ -167,7 +186,7 @@ const StarList: React.FC<Props> = props => {
           <label>
             <input
               type="text"
-              placeholder="コメントを入力"
+              placeholder={props.stars.comment}
               onChange={e => {
                 handleChange(e);
               }}
